@@ -26,12 +26,12 @@ type: practice-session
 
 ```yaml
 current_stage: 1
-status: not_started # not_started | in_progress | awaiting_feedback | done | revisited
-next_focus: '[stage task]' # e.g. Identify primary actors
+status: in_progress # not_started | in_progress | done | revisited
+next_focus: 1 # [1, 2, 3, or 4 based on the current active stage's key questions]
 active_cross_cutting_concern: null # e.g., consistency, cognitive load, compliance
-blocked_by: null # e.g., awaiting research on X, awaiting clarification on Y
+blocked_by: null # e.g., awaiting research on X
 stages_status:
-  1: not_started
+  1: in_progress
   2: not_started
   3: not_started
   4: not_started
@@ -47,8 +47,7 @@ stages_status:
 
 ## Stage 1: Understanding the Business
 
-- **Status:** `not_started | in_progress | awaiting_feedback | done | revisited`
-- **Reasonings:** `[Awaiting Coach Interview...]`
+- **Reasonings:** -
 - **Decisions:** —
 - **Alternatives Considered:** —
 - **Assumptions:** —
