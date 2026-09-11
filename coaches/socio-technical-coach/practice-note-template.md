@@ -15,10 +15,9 @@ type: practice-session
 
 ## 📌 Business Context
 
-- **Scenario:** [Coach-generated business situation — 3-5 sentences]
+- **Scenario:** [Coach-generated business situation — 1-3 sentences]
 - **Goal:** [What the business is trying to accomplish / North Star]
 - **Known Constraints:** [Engineering, regulatory, time-to-market, headcount, etc.]
-- **Initial Info Provided:** [Seed facts at start]
 
 ---
 
@@ -26,11 +25,7 @@ type: practice-session
 
 ```yaml
 current_stage: 1
-status: in_progress # not_started | in_progress | done | revisited
-next_focus: 1 # [1, 2, 3, or 4 based on the current active stage's key questions]
-active_cross_cutting_concern: null # e.g., consistency, cognitive load, compliance
-blocked_by: null # e.g., awaiting research on X
-stages_status:
+stages_status: # not_started | in_progress | done | revisited
   1: in_progress
   2: not_started
   3: not_started
@@ -39,6 +34,9 @@ stages_status:
   6: not_started
   7: not_started
   8: not_started
+next_focus: 1 # [1, 2, 3, or 4 based on the current active stage's key questions]
+active_cross_cutting_concern: null # e.g., consistency, cognitive load, compliance
+blocked_by: null # e.g., awaiting research on X
 ```
 
 > Coach MUST read and update this block on every stage transition. Resume = restore from here.
