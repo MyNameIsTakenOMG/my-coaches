@@ -51,6 +51,7 @@ blocked_by: null # e.g., awaiting research on X
 - **Assumptions:** —
 - **Open Questions:** —
 - **Risks:** —
+- **Resolved Blockers & Learnings:** —
 - **Feedback (Coach):** —
 
 ---
