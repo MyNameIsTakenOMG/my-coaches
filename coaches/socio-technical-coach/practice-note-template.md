@@ -45,7 +45,7 @@ blocked_by: null # e.g., awaiting research on X
 
 ## Stage 1: Understanding the Business
 
-- **Reasonings:** -
+- **Reasonings:** —
 - **Decisions:** —
 - **Alternatives Considered:** —
 - **Assumptions:** —
