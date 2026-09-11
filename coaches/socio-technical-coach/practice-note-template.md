@@ -55,3 +55,16 @@ blocked_by: null # e.g., awaiting research on X
 - **Feedback (Coach):** —
 
 ---
+
+## Reflection
+
+- **What we did:** —
+- **What we learned:** —
+- **Where struggled:** —
+- **Where did well:** —
+- **Where could be different:** —
+- **Recommendations for future study** —
+
+---
+
+<!-- CONTINUUM STATE MACHINE (DO NOT EDIT MANUALLY — coach manages Analysis State above) -->
