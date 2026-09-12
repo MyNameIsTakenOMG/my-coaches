@@ -92,27 +92,18 @@ graph TD
 
 ## 🚧 Step 4: Discover Boundaries (Bounded Contexts)
 
-In this case, we have **One Actor** -- the learner who invokes the skill, and **One Overarching Domain**(`Coaching`), the language doesn't split.
+Through active prototype testing, we discovered that separating the conversation from the file-ledger created a false dichotomy. In an event-driven system, reading the state, validating the analysis, and writing the update are intertwined phases of a single conversational tick.
 
-For Context discovery, we drew boundaries based on **Three Distinctive Operational Realities**:
+Therefore, our system collapses into **Two Distinctive Bounded Contexts**:
 
-- **Session Lifecycle Orchestration Context**
-  - When the user wakes up the skill, they aren't interviewing, and they aren't evaluating an architectural decision yet. They are performing session lifecycle management (routing, file checks, and menu rendering). Trying to force the Interviewing Context to handle menu logic or file path validation would violate the Single Responsibility Principle.
-    - `Render main menu`
-    - `Identify the user intent`
-    - `Validate file path (practice note)`
-- **Socratic Interviewing Context**
-  - **The Dialogue Boundary (Volatile/Creative)**: This space handles the human interaction. It is temporary, conversational, and changes with every message you type. It needs a flexible, fluid cognitive model.
-    - `Manage the persona`
-    - `The socratic back-and-forth`
-    - `The progressive reveal`
-- **State Evaluation & Note Sync**
-  - **The State Ledger Boundary (Immutable/Structured)**: This space handles the data contract. It must be highly disciplined, predictable, and rigidly formatted so it doesn't corrupt your markdown files or state machines.
-    - `Validate exit criteria`
-    - `Format the markdown schema`
-    - `Rewrite the practice note`
+- **Session Lifecycle Orchestration Context (The Ingress Gateway)**
+  - **Reality:** Governing file-system operations and entry intents _before_ any mentoring loop activates. This context owns the main menu, path validation, and system resets, acting as a strict, low-overhead initialization wizard.
+  - _Capabilities:_ `Render main menu`, `Identify user intent`, `Initialize template`, `Flush file path`.
+- **The Active Practice Session Loop Context (The Integrated Mentoring Engine)**
+  - **Reality:** An atomic runtime execution loop where evaluation, state mutation, file disk persistence, and Socratic persona dialogue happen sequentially within a single turn. It manages non-linear conversational jumps via specialized sub-protocols, global guardrails, and hint matrices.
+  - _Capabilities:_ `State Re-Hydration`, `Socratic Dialogue & Persona`, `Anti-Pattern Interception (Pitfalls)`, `Direct-to-Disk Ledger Persistence`, `Mathematical State Mutation (next_focus++)`.
 
-<!-- - _Explain how the capabilities were split into the "Socratic Dialogue Context" (volatile/conversational) and the "State Evaluation & Sync Context" (rigid/immutable data ledger)._ -->
+---
 
 ## 🎯 Step 5: System Design (High-Level Strategy & V1 Scoping)
 
@@ -120,71 +111,61 @@ For Context discovery, we drew boundaries based on **Three Distinctive Operation
 
 ```mermaid
 flowchart TD
-    A[User Invoke Skill] -->B[Display the menu]
-    B --> C{Ask user intent}
-    C --> | Start new pratice | D{Ask file path for new practice note}
-    D --> | Default path | G[Start a new practice session]
-    D --> | Custom file path | G[Start a new practice sessoin]
-    C --> | Resume a practice | E[Ask practice note file path]
-    E --> | Provide file path | H[Resume the practice session]
-    C --> | Reset a practice | F[Ask practice note file path]
-    F --> | Provide file path | I[Reset the practice session]
+    A[User Invoke Skill] --> B[Display Main Menu]
+    B --> C{Verify User Intent}
+    C --> | 1. Start New Practice | D[Initialize Template + Generate Seed Scenario]
+    C --> | 2. Resume Practice | E[Load Practice Note + Re-Hydrate Registers]
+    C --> | 3. Reset Practice | F[Flush Content to Default Template + Pause]
+    D & E --> G[Hand-off to Active Practice Loop]
 ```
 
-> [!NOTE] The initialization is designed to be a "Strict Wizard Flow" -- where the agent takes complete control of the ingress conversation.
->
-> - Zero Parsing Overhead: The agent doesn't have to interprete the user prompt. It explicitly prompts for exactly what it needs, one question at a time.
-> - Lower Cognitive Load: as the user, you don't have to remember a special syntax to invoke the coach. You just invoke the skill, and the wizard takes the wheel.
-> - Predictable Execution: Since the agent drives the sequence, it guarantees it will not enter the coaching loop until the workspace files are perfectly aligned.
-
-**Alternative Designs:**
-
-- Design: Mapping out every combination of the user inputs:
-  - `intent, no file path`
-  - `no intent, file path`
-  - `no intent, no file path`
-  - `intent, file path`
-  - `...`
-
-- Problem: **State Space Explosion**
-  - the whole logic will quickly turn into a fragile maze of `if/else` statements
-  - because the agent skill is written in markdown format, letting the LLM navigate an unguided matrix of inputs will lead to inconsistent behavior and routing bugs.
+> [!NOTE]
+> The initialization is a "Strict Wizard Flow" to ensure complete environment stability. It guarantees the agent will not spin up the complex coaching loop until the local file workspace paths and markdown files are aligned.
 
 ---
 
-### Socratic Interviewing Context
+### The Active Practice Session Loop Context
 
-- The **Coach** Persona:
-  - Collaborative
-  - Progressive reveal
-  - Never hand answers
-  - Always encourage learner to think, explore, research
-- The **Three** dialogue branches:
-  - Branch A: [Learner Asks Questions]
-    - The Context: The learner asks for clarification on the business scenario, or asks for a technical definition.
-    - The Coach's Strategy:
-      - If it's about Business Context: The coach must dynamically act as the "Product Owner/Client" and provide a realistic, reasonable assumption that fits the narrative (`which leads to the Note Sync`).
-      - If it's about Technical/Architectural concepts: The coach encourages the learner to do research.
-  - Branch B: [Learner Gets Stuck]
-    - The Context: The learner asks "I don't know" or "I'm stuck".
-    - The Coach's Strategy:
-      - The 3-Tier Hint Ladder: the coach will help the learner in a progressive way: `nudge -> a guiding question -> a minimal explanation`, which guarantees the coach never over-helps too early. It lets the human cognitive muscle stretch as much as possible before stepping in.
-  - Branch C: [Learner Reasons + Decisions]
-    - The Context: The learner provides analysis, or declare a design decision.
-    - The Coach's Strategy (`The Gatekeeper`): refer to [Evaluation & Note Sync](#evaluation--note-sync)
+Rather than processing the dialogue linearly, the Integrated Mentoring Engine functions as a **hub-and-spoke routing engine**, taking in the user’s response, evaluates its intent, and selecting the right tool (**Sub-Protocol**) for the job, with **Sub-Protocol D** looping back to feed the next initialization step.
 
----
+```mermaid
+flowchart TD
+    User([User Response]) --> Coach{🧠 Socratic Coach Router}
 
-### Evaluation & Note Sync
+    %% Spokes from the Central Router
+    Coach -->|1. Initial Ingress or Stage Shift| SubA[🗺️ Sub-Protocol A: Ingress & Init]
+    Coach -->|2. Asks Question or Stuck| SubB[🗺️ Sub-Protocol B: Assist Gap]
+    Coach -->|3. Submits Design/Reasoning| SubC[🗺️ Sub-Protocol C: Eval Valve]
 
-> [!Note] in V1, We will only focus on the part:`stage 1` for both `Practice Note Template` and `Stage Definition`.
+    %% Internal routing and loops
+    SubC -->|Passes Validation| SubD[🗺️ Sub-Protocol D: Note Sync Engine]
+    SubC -->|Triggers Pitfall| Calibrate[Gentle Calibration Challenge]
 
-- The `Practice Note` generation
-- The Coach's Strategy (`The Gatekeeper`): Evaluating the learner's `Reasoning + Decision`
-  - The coach evaluates the learner's reasoning against the `stage definition`'s **Exit Criteria Rubric**.
-  - If it falls short: It gently challenges you by highlighting a friction point or asking about a drawback.
-  - If it passes: It acknowledges the solid choice, summarizes the learner's reasoning and decision along with coach feedback, and updates the _practice note_ (`which leads to the Note Sync`).
-- When coach provides a made-up assumption, lock it in by updating the _practice note_ automatically before presenting it to the learner
-- When the current stage is accomplished, coach should save the progress by updating the _practice note_ automatically
+    %% Direct Writing and State Mutation Loops
+    SubB -->|Invent Assumption| WriteFile[(Direct-Write Note)]
+    SubB -->|Escalate Pause Blocker| WriteFile
+    SubD -->|Append Ledger & Update next_focus| WriteFile
+
+    %% The Loop-Back Hook
+    WriteFile -->|Loop back for next task| SubA
+    Calibrate -->|Apply Anchor Rule| Coach
+    SubA -->|Prompt Question / Check Blocker| Coach
+
+```
+
+#### 🛠️ Core Engine Components & Sub-Protocols:
+
+- **Sub-Protocol A: Stage Ingress & Initialization (The Board Setup)**
+  - Fires _only_ on boot or stage transition. Re-hydrates system memory from the file ledger, loads static definitions, prints the stage summary, and maps out whether a previous `blocked_by` state needs an expert senior override to clear before asking the current question.
+- **Sub-Protocol B: Conversational Assistance & Deadlocks (The Assist Gap)**
+  - Intercepts dialogue when you ask a question or declare you are stuck. It splits into handling missing business facts (generating an automatic `- **Assumptions:**` file patch), conceptual analogies, immediate chat hints via the **3-Tier Hint Ladder**, or recording a `blocked_by` pause string to disk if you explicitly request a break.
+- **Sub-Protocol C: The Evaluation Valve (The Gatekeeper)**
+  - Acts as a pure verification filter. It screens your reasoning against the stage's static list of `Common Pitfalls`. If an anti-pattern triggers, it halts progress and deploys a _Gentle Calibration Challenge_. If the reasoning is sound, it passes control to Sub-Protocol D.
+- **Sub-Protocol D: State Progress & Stage Hand-off (The Data Writer)**
+  - The sole data writer of the domain. It takes validated reasoning, synthesizes it into short append-only bullets under `- **Reasonings:**`/`- **Decisions:**`, updates coach feedback, increments the `next_focus` register (+1), shifts stage statuses forward, and seals the document as `COMPLETE` on terminal stages—writing all modifications directly to disk under the hood.
+
+#### 🔒 Global Execution Guardrails (Omnipresent Constraints)
+
+- **The Conversational Anchor Rule:** No matter which sub-protocol or conversational branch triggers during a turn, the coach _must_ filter its final paragraph to loop back and explicitly re-state the active milestone question. It prevents thread drift and guarantees absolute focus.
 
 <!-- - _Detail what we choose to build for our absolute first tactical step, what we buy/outsource, and what we delay to keep V1 ruthlessly focused._ -->
