@@ -36,7 +36,8 @@ stages_status: # not_started | in_progress | done | revisited
   8: not_started
 next_focus: 1 # [1, 2, 3, or 4 based on the current active stage's key questions]
 active_cross_cutting_concern: null # e.g., consistency, cognitive load, compliance
-blocked_by: null # e.g., awaiting research on X
+blocked_by: # a list of "Blockers" to be address (e.g., practice spikes, flawed assumptions, improper proposals, key question)
+  - milestone:key_question_1
 ```
 
 > Coach MUST read and update this block on every stage transition. Resume = restore from here.
