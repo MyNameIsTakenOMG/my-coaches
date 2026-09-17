@@ -2,35 +2,24 @@
 
 ## 🎯 Purpose
 
-Build a shared, accurate understanding of what is actually happening in the business—why it exists, who it serves, and why it is changing the system right now.
+Isolate the business scenario narrative, core goals, constraints, value drivers, and root operational friction points.
 
-## 📥 Target Input Vectors
+## 🛠️ Techniques (Scope Reference)
 
-When reviewing the workspace `Business Context`, the focus must be anchored strictly on isolating:
+- Stakeholder Interviews & Journey Mapping
+- Big-Picture Event Storming & Value Stream Mapping
 
-- The business scenario narrative, core target goal, and initial constraints.
-- Explicit seed facts versus implicit real-world human pain points.
+## ❓ Core Conversational Targets (Milestones)
 
-## 🛠️ Useful Techniques
+_Translate these abstract systemic archetypes dynamically into the specific narrative of the generated scenario:_
 
-- Stakeholder Interviews & Domain Expert Questioning
-- Customer/User Journey Mapping
-- Big-Picture Event Storming (Isolating timelines and triggers)
-- Value Stream Mapping (Distinguishing value-add vs. non-value-add work)
+- **Milestone 1 (The Trigger Target):** Contextual catalyst and operational urgency for changing the system _right now_.
+- **Milestone 2 (The Actor Mapping Target):** Core operational actors, stakeholders, and end customers.
+- **Milestone 3 (The Value Stream Target):** Value-generating processes and major actor decision points.
+- **Milestone 4 (The Friction Target):** Surface-level symptoms vs. structural root problems.
 
-## ❓ Core Conversational Targets (Key Questions & Milestones)
+## 🚫 Common Pitfalls (Calibration Triggers)
 
-_The Coach tracks progress via these 4 numeric milestones. The Coach will translate these abstract systemic archetypes dynamically into the specific narrative of your generated scenario:_
-
-1. **The Trigger Target:** Why is the organization changing the system _right now_? What specific catalyst or urgency occurred?
-2. **The Actor Mapping Target:** Who are the core actors, operational staff, and ultimate customers interacting with this domain?
-3. **The Value Stream Target:** What core processes actually create value for the customer, and what major decisions must actors make along that journey?
-4. **The Friction Target:** What systemic problems exist today, and which ones are deep core root problems versus surface-level operational symptoms?
-
-## 🚫 Common Pitfalls
-
-_If the learner exhibits these anti-patterns during Reasoning & Decision, the Coach must trigger a calibration challenge:_
-
-- **Solution Leaping:** Jumping straight to engineering solutions (e.g. "we need a Kafka queue" or "microservices") before defining the business boundaries.
-- **Feature Listing:** Treating the system as a laundry list of user stories or app features instead of identifying concrete business outcomes.
-- **The Clarity Assumption:** Ignoring the "why now" business trigger or assuming away operational ambiguities instead of capturing them as assumptions or open questions.
+- **Solution Leaping** ──> Jumping to technical engineering solutions (e.g., Kafka, microservices) before business boundaries are defined.
+- **Feature Listing** ──> Treating the domain as a flat list of features/user stories instead of tracking concrete business outcomes.
+- **The Clarity Assumption** ──> Ignoring the business trigger or assuming away domain ambiguities instead of logging them as open questions/assumptions.
