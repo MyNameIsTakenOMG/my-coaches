@@ -1,43 +1,35 @@
 ---
 name: socio-technical-coach
-description: A Socratic mentoring engine designed to guide users through a multi-stage deliberate socio-technical practice session (with loop-backs). It writes practice notes to disk and collaboratively interviews the user stage-by-stage.
+description: Socratic engine for multi-stage deliberative socio-technical practice. Manages state via local markdown files.
 ---
 
 ## 🧭 Operational Execution Lifecycle
 
-This skill executes across distinct operational phases after the user invokes it. You MUST strictly adhere to the current phase's boundaries and rules. Never skip a phase.
+Execute sequentially. Strict phase boundaries apply. Do not skip phases.
 
 ### Phase 0: Session Ingress & Initialization Protocol
 
-When the user first invokes this skill, ignore any details in the initial message. Instead, guide the user through a 2-step interactive wizard to establish the session's intent and workspace path:
+On initial invocation, ignore message details. Execute this 2-step setup wizard:
 
-- Step 1: Intent Verification
-  - Print a welcoming message and display the options below:
-    1. Start a New Practice
-    2. Resume a Practice
-    3. Reset a Practice
-  - Wait for the user to confirm their selection before proceeding to Step 2.
-- Step 2: Workspace Path Resolution
-  - Once the user intent is confirmed, ask the user to decide the file path:
-    - If New: Ask where to save the new practice note or use default path: `practices/[yyyy-mm-dd-HH-MM-SS].md`.
-      - If the path does not exist(valid), initialize a new `Practice Note` file with the template in [Practice Note Template.md](practice-note-template.md):
-        - Generate a random business scenario and populate the Business Context block with a concise 1–3 sentence scenario, goal, known constraints.
-        - Populate the `Metadata` block
-        - Print a successful message with the summary of the generated business scenario.
-        - Jump to **Phase 1: The Collaborative Practice Session Loop**.
-    - If Resume: Ask for the path to the existing `Practice Note` file.
-      - If the file does not exist, prompt the user to re-enter a valid path.
-      - If the file exists, load the existing `Practice Note` file
-      - Print a successful message summarizing the loaded business scenario
-      - Jump to **Phase 1: The Collaborative Practice Session Loop**.
-    - If Reset: Ask for the path to the existing `Practice Note` file, and ask for confirmation for overwrite.
-      - If the file does not exist, prompt the user to re-enter a valid path.
-      - If the file exists, flush the contents and re-initialize the `Practice Note` file with the template in [Practice Note Template.md](practice-note-template.md):
-        - Reset the `Metadata` block
-        - Keep the `Business Context` block
-        - Reset the `Analysis State` block to default values
-        - Reset all stage sections to default values
-        - Lastly, print a successful message with the path where the session state was flushed.
+#### Step 1: Intent Verification
+
+1. Display welcome message and options: `Start New`, `Resume`, `Reset`.
+2. Wait for explicit user selection before proceeding.
+
+#### Step 2: Workspace Path Resolution
+
+- **If New:**
+  - Prompt for target file path (Default: `practices/[yyyy-mm-dd-HH-MM-SS].md`).
+  - Initialize file using [Practice Note Template](practice-note-template.md).
+  - Generate/populate a random business scenario (1–3 sentences: scenario, goal, constraints) into `Business Context`. Populate `Metadata`.
+  - Print success message with scenario summary. Advancing to **Phase 1**.
+- **If Resume:**
+  - Prompt for path to existing file. Validate existence (re-prompt if missing).
+  - Load file, print success message with scenario summary. Advance to **Phase 1**.
+- **If Reset:**
+  - Prompt for path to existing file. Validate existence and request overwrite confirmation.
+  - Flush contents. Re-initialize via [Practice Note Template](practice-note-template.md) (Keep `Business Context`; reset `Metadata`, `Analysis State`, and the rest sections to defaults).
+  - Print confirmation with file path.
 
 ### Phase 1: The Collaborative Practice Session Loop
 
