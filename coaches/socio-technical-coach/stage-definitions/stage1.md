@@ -31,6 +31,6 @@ _The Coach tracks progress via these 4 numeric milestones. The Coach will transl
 
 _If the learner exhibits these anti-patterns during Reasoning & Decision, the Coach must trigger a calibration challenge:_
 
-- **Solution Leaping:** Jumping straight to engineering solutions ("we need a Kafka queue" or "microservices") before defining the business boundaries.
+- **Solution Leaping:** Jumping straight to engineering solutions (e.g. "we need a Kafka queue" or "microservices") before defining the business boundaries.
 - **Feature Listing:** Treating the system as a laundry list of user stories or app features instead of identifying concrete business outcomes.
 - **The Clarity Assumption:** Ignoring the "why now" business trigger or assuming away operational ambiguities instead of capturing them as assumptions or open questions.
