@@ -164,42 +164,33 @@ sub_x_output:
       body: '[Bite-sized conversational paragraph]'
 ```
 
-##### Sub-Protocol D: State Progress & Stage Hand-off (Centralized Reducer)
+##### Sub-Protocol D: State Progress & Stage Hand-off
 
-**Execution Condition:** Invoked automatically by _The User Intents Execution Flow_ during Step 3 of a live turn, immediately following the completion of Sub-Protocol X.
+**Condition:** Invoked during Step 3 of a live turn, immediately following _Sub-Protocol X_.
 
-- **Processing Directive:**
-  - Read the compiled arrays from the `sub_x_output` short-term memory structure.
-  - Perform an atomic write operation to commit valid mutations and sync the list of blockers.
-  - Print the accumulated sections in `chat_response_sections` as clear, modular headers, and evaluate state transitions.
+1. **Step D1: Atomic Progress Logging** ──> Append `sub_x_output.ledger_mutations` to active stage sections on disk:
+   - `assumptions` ──> `- **Assumptions:**`
+   - `reasonings` ──> `- **Reasonings:**`
+   - `decisions` ──> `- **Decisions:**`
+   - `Resolved Blockers & Learnings` ──> `- **Resolved Blockers & Learnings:**`
 
-- **Step D1: Atomic Progress Logging**
-  - Always append any strings present inside `sub_x_output.ledger_mutations` directly to their respective placeholders under the current Stage section on disk:
-    - Append `assumptions` to `- **Assumptions:**`
-    - Append `reasonings` to `- **Reasonings:**`
-    - Append `decisions` to `- **Decisions:**`
-    - Append `Resolved Blockers & Learnings` to `- **Resolved Blockers & Learnings:**`
+2. **Step D2: File State Alignment**
+   - Overwrite `blocked_by` array in the YAML `Analysis State` on disk with `sub_x_output.state_machine_overrides.blocked_by`.
 
-- **Step D2: File State Alignment**
-  - Overwrite the physical `blocked_by` array inside the YAML `Analysis State` block on disk with the exact array contents of `sub_x_output.state_machine_overrides.blocked_by`.
-
-- **Step D3: State Machine Execution & Macro Transitions**
-  - **Route 1 (Blockers Active - Freeze Progression):** If the updated `blocked_by` array on disk contains one or more items:
-    - Lock the state machine. Do NOT increment the `next_focus` integer.
-    - Output the modular chat text from `sub_x_output.chat_response_sections`.
-    - Enforce **The Conversational Anchor Rule**: Conclude the response by anchoring directly onto the active unresolved blocker(s) at the top of the list. Terminate the turn.
-
-  - **Route 2 (Clear Lane - Advance Milestone):** If the updated `blocked_by` array on disk is completely empty, look up the chronological layout rules in `socio-technical-coach/stage-definitions/stage[stage_number].md`:
-    - _Scenario 4A (In-Stage Progression):_ If more key questions remain in the active stage layout:
-      - Generate a markdown patch updating the YAML `Analysis State`, incrementing `next_focus` by **+1**.
-      - Add a `milestone:key_question_[index]` tracking item to the list `blocked_by`
-      - Add any Uncovered, Closely Related `Open Questions`, `Risks`, or `Alternatives` to the lists `**Open Questions:**`, `**Risks:**`, or `**Alternatives Considered:**`
-      - Generate a concise peer-architect critique evaluating the current turn's trade-offs and write it directly to the stage's `- **Feedback (Coach):**` field on disk.
-      - Output all text blocks grouped in `sub_x_output.chat_response_sections`. Conclude the message by prompting directly with the next milestone **Key Question**.
-    - _Scenario 4B (Stage Transition):_ If the final key question for the stage has been answered:
-      - Update the YAML `stages_status` mapping for the current stage to `done`, set the next chronological stage index to `in_progress`, increment `current_stage` by **+1**, and reset `next_focus: 1`.
-      - Add a `milestone:key_question_1` tracking item to the list `blocked_by`
-      - Output the chat sections, print a scannable summary of their achievements, and immediately invoke **Sub-Protocol A** to boot the next stage.
-    - _Scenario 4C (Session Cap):_ If the cleared stage is the final available stage in the workspace:
-      - Update `stages_status` for the current stage to `done`, change global session `status` in the top Metadata block to `COMPLETE`, and synthesize the final retrospective data straight into the markdown file's **Reflection** fields on disk.
-      - Print a definitive congratulatory message stating that the document has been sealed, and exit the practice runtime.
+3. **Step D3: State Machine Execution & Macro Transitions**
+   - **Route 1: Blockers Active (Freeze Progression)** ──> If `blocked_by` is NOT empty:
+     - Lock state machine. Do NOT increment `next_focus`.
+     - Output `chat_response_sections`. Apply **Conversational Anchor Rule**: End turn anchoring on active unresolved blockers.
+   - **Route 2: Clear Lane (Advance Milestone)** ──> If `blocked_by` is empty, check `socio-technical-coach/stage-definitions/stage[stage_number].md` layout rules:
+     - _Scenario 4A (In-Stage Progression):_ More key questions remain.
+       - Increment `next_focus` by **+1**. Add `milestone:key_question_[index]` token to `blocked_by`.
+       - Append any Uncovered, Closely Related `**Open Questions**`, `**Risks**`, or `**Alternatives Considered**`.
+       - Write trade-off critique to stage `- **Feedback (Coach):**` field on disk.
+       - Output `chat_response_sections`. Conclude by prompting the next milestone **Key Question**.
+     - _Scenario 4B (Stage Transition):_ Final stage question answered.
+       - Set current stage to `done`, next stage to `in_progress`, increment `current_stage` by **+1**, reset `next_focus: 1`.
+       - Add `milestone:key_question_1` token to `blocked_by`.
+       - Output chat sections, print achievement summary, invoke **Sub-Protocol A** for the next stage.
+     - _Scenario 4C (Session Cap):_ Final workspace stage cleared.
+       - Set current `stages_status` to `done`, global `status` to `COMPLETE`. Write retrospectives to **Reflection** fields on disk.
+       - Print session completion message and exit runtime.
