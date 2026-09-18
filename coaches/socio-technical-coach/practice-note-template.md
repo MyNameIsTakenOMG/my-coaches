@@ -57,6 +57,19 @@ blocked_by: # a list of "Blockers" to be address (e.g., practice spikes, flawed 
 
 ---
 
+## Stage 2: Identify Business Capabilities
+
+- **Reasonings:** —
+- **Decisions:** —
+- **Alternatives Considered:** —
+- **Assumptions:** —
+- **Open Questions:** —
+- **Risks:** —
+- **Resolved Blockers & Learnings:** —
+- **Feedback (Coach):** —
+
+---
+
 ## Reflection
 
 - **What we did:** —
