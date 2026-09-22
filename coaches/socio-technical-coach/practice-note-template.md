@@ -70,6 +70,19 @@ blocked_by: # a list of "Blockers" to be address (e.g., practice spikes, flawed 
 
 ---
 
+## Stage 3: Model Work & Flow
+
+- **Reasonings:** —
+- **Decisions:** —
+- **Alternatives Considered:** —
+- **Assumptions:** —
+- **Open Questions:** —
+- **Risks:** —
+- **Resolved Blockers & Learnings:** —
+- **Feedback (Coach):** —
+
+---
+
 ## Reflection
 
 - **What we did:** —
